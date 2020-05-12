@@ -31,7 +31,7 @@ defmodule Yggdrasil.Mixfile do
   defp deps do
     [
       {:exreg, "~> 0.1"},
-      {:phoenix_pubsub, "~> 1.1"},
+      {:phoenix_pubsub, "~> 2.0"},
       {:poolboy, "~> 1.5"},
       {:jason, "~> 1.1"},
       {:skogsra, "~> 2.2"},

@@ -11,7 +11,7 @@ defmodule Yggdrasil.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      pubsub_adapter(),
+      pubsub_child(),
       {PublisherGen, [name: PublisherGen]},
       {SubscriberGen, [name: SubscriberGen]},
       {Registry, [name: Registry]},
@@ -30,14 +30,21 @@ defmodule Yggdrasil.Application do
       {:error, reason}
   end
 
-  @spec pubsub_adapter() :: Supervisor.child_spec() | no_return()
-  defp pubsub_adapter do
+  @spec pubsub_child() :: Supervisor.child_spec() | no_return()
+  defp pubsub_child do
     adapter = Settings.pubsub_adapter!()
+    get_child_specs(adapter)
+  end
 
+  defp get_child_specs(Phoenix.PubSub.PG2), do:
+    {Phoenix.PubSub, [name: Yggdrasil.PubSub, adapter: Phoenix.PubSub.PG2]}
+
+  defp get_child_specs(adapter) do
     options =
       Settings.pubsub_options!()
       |> Keyword.put(:name, Settings.pubsub_name!())
 
     Supervisor.child_spec({adapter, options}, type: :supervisor)
   end
+
 end
